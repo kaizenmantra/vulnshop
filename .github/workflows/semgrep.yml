@@ -1,0 +1,46 @@
+name: semgrep
+
+# Scan on every push to main and on PRs, plus a manual trigger.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Least privilege + the one write scope needed to upload SARIF to code scanning.
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  semgrep:
+    name: semgrep-scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # PINNED engine version — deterministic results, no surprise rule-engine drift.
+      - name: Install Semgrep (pinned)
+        run: pip install semgrep==1.170.1
+
+      # A focused, curated ruleset: exactly one rule per planted vulnerability, so
+      # code scanning shows three legible alerts (not a swarm). In production you'd
+      # point this at the full Semgrep registry (e.g. --config p/default).
+      - name: Semgrep scan -> SARIF
+        continue-on-error: true
+        run: |
+          semgrep scan \
+            --config r/python.lang.security.audit.formatted-sql-query.formatted-sql-query \
+            --config r/python.lang.security.dangerous-system-call.dangerous-system-call \
+            --config r/python.flask.security.audit.render-template-string.render-template-string \
+            --sarif --output semgrep.sarif
+
+      - name: Upload SARIF to GitHub code scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep.sarif

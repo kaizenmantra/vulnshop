@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# App runtime
+shop.db
+exports/
+
+# Semgrep
+semgrep.sarif
+.semgrep/
+
+# OS
+.DS_Store
