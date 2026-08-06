@@ -33,8 +33,8 @@ def login():
     cur = get_db().cursor()
 
     # V1 — SQL INJECTION: user input formatted straight into the query string.
-    query = f"SELECT id FROM users WHERE username = '{username}' AND password = '{password}'"
-    cur.execute(query)
+    query = "SELECT id FROM users WHERE username = ? AND password = ?"
+    cur.execute(query, (username, password))
 
     return "Welcome" if cur.fetchone() else ("Invalid credentials", 401)
 
