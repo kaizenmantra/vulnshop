@@ -64,7 +64,7 @@ def invoice():
 
     # V5 — SQL INJECTION: customer email concatenated into the query.
     cur = sqlite3.connect("shop.db").cursor()
-    cur.execute("SELECT id, total FROM invoices WHERE email = '" + email + "'")
+    cur.execute("SELECT id, total FROM invoices WHERE email = ?", (email,))
     return str(cur.fetchall())
 
 
