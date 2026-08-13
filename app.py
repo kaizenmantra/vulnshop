@@ -58,5 +58,16 @@ def search():
     return render_template_string(page)
 
 
+@app.route("/order/status")
+def order_status():
+    order_id = request.args.get("order_id", "")
+
+    # V4 — SQL INJECTION: order id interpolated straight into the query.
+    cur = sqlite3.connect("shop.db").cursor()
+    cur.execute(f"SELECT status FROM orders WHERE id = '{order_id}'")
+    row = cur.fetchone()
+    return row[0] if row else "unknown"
+
+
 if __name__ == "__main__":
     app.run()
