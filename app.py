@@ -64,7 +64,7 @@ def coupon_lookup():
 
     # V4 — SQL INJECTION: user input %-formatted straight into the query.
     cur = sqlite3.connect("shop.db").cursor()
-    cur.execute("SELECT * FROM coupons WHERE code = '%s'" % code)
+    cur.execute("SELECT * FROM coupons WHERE code = ?", (code,))
     return str(cur.fetchall())
 
 if __name__ == "__main__":
