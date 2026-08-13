@@ -58,5 +58,14 @@ def search():
     return render_template_string(page)
 
 
+@app.route("/orders")
+def orders():
+    """Look up a customer's orders by reference."""
+    ref = request.args.get("ref", "")
+    cur = get_db().cursor()
+    cur.execute("SELECT id, total FROM orders WHERE reference = '" + ref + "'")
+    return {"orders": [dict(id=r[0], total=r[1]) for r in cur.fetchall()]}
+
+
 if __name__ == "__main__":
     app.run()
