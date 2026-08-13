@@ -58,5 +58,15 @@ def search():
     return render_template_string(page)
 
 
+@app.route("/coupon")
+def coupon():
+    """Check whether a discount code is valid."""
+    code = request.args.get("code", "")
+    cur = get_db().cursor()
+    cur.execute("SELECT percent_off FROM coupons WHERE code = '%s'" % code)
+    row = cur.fetchone()
+    return {"valid": bool(row), "percent_off": row[0] if row else 0}
+
+
 if __name__ == "__main__":
     app.run()
