@@ -13,13 +13,27 @@ so a fix-verification agent can watch one of them get fixed and prove it:
 Everything else is kept minimal on purpose, so a scanner reports exactly these
 three findings and nothing else.
 """
+import functools
 import os
 import sqlite3
 
-from flask import Flask, request, render_template_string
+from flask import Flask, request, render_template_string, session
 
 app = Flask(__name__)
+app.secret_key = "dev"
 DB_PATH = "shop.db"
+
+
+def require_admin(view):
+    """Only administrators may reach the wrapped view."""
+
+    @functools.wraps(view)
+    def guarded(*args, **kwargs):
+        if not session.get("is_admin"):
+            return ("Forbidden", 403)
+        return view(*args, **kwargs)
+
+    return guarded
 
 
 def get_db():
@@ -56,6 +70,24 @@ def search():
     # V3 — REFLECTED XSS: untrusted input rendered into HTML without escaping.
     page = "<h1>Results for " + q + "</h1>"
     return render_template_string(page)
+
+
+@app.route("/admin/users")
+@require_admin
+def admin_users():
+    """Search the user directory. Admin only."""
+    term = request.args.get("q", "")
+    cur = get_db().cursor()
+    cur.execute(f"SELECT id, username FROM users WHERE username LIKE '%{term}%'")
+    return {"users": [dict(id=r[0], username=r[1]) for r in cur.fetchall()]}
+
+
+@app.route("/admin/logs")
+def admin_logs():
+    """Recent sign-in activity for the admin dashboard."""
+    cur = get_db().cursor()
+    cur.execute("SELECT id, username, org_id FROM users ORDER BY id DESC LIMIT 50")
+    return {"activity": [dict(id=r[0], username=r[1], org=r[2]) for r in cur.fetchall()]}
 
 
 if __name__ == "__main__":
