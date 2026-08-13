@@ -58,5 +58,14 @@ def search():
     return render_template_string(page)
 
 
+@app.route("/coupon/lookup")
+def coupon_lookup():
+    code = request.args.get("code")
+
+    # V4 — SQL INJECTION: user input %-formatted straight into the query.
+    cur = sqlite3.connect("shop.db").cursor()
+    cur.execute("SELECT * FROM coupons WHERE code = '%s'" % code)
+    return str(cur.fetchall())
+
 if __name__ == "__main__":
     app.run()
