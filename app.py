@@ -64,7 +64,7 @@ def order_status():
 
     # V4 — SQL INJECTION: order id interpolated straight into the query.
     cur = sqlite3.connect("shop.db").cursor()
-    cur.execute(f"SELECT status FROM orders WHERE id = '{order_id}'")
+    cur.execute("SELECT status FROM orders WHERE id = ?", (order_id,))
     row = cur.fetchone()
     return row[0] if row else "unknown"
 
