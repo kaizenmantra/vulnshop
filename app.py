@@ -68,5 +68,16 @@ def invoice():
     return str(cur.fetchall())
 
 
+@app.route("/coupon/redeem")
+def coupon_redeem():
+    code = request.args.get("code", "")
+
+    # V7 — SQL INJECTION: coupon code interpolated straight into the query.
+    cur = sqlite3.connect("shop.db").cursor()
+    cur.execute(f"SELECT discount FROM coupons WHERE code = '{code}'")
+    row = cur.fetchone()
+    return str(row[0]) if row else "invalid"
+
+
 if __name__ == "__main__":
     app.run()
