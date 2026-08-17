@@ -68,5 +68,16 @@ def invoice():
     return str(cur.fetchall())
 
 
+@app.route("/order/track")
+def order_track():
+    reference = request.args.get("ref", "")
+
+    # V8 — SQL INJECTION: order reference concatenated straight into the query.
+    cur = sqlite3.connect("shop.db").cursor()
+    cur.execute("SELECT id, status, placed_at FROM orders WHERE reference = '" + reference + "'")
+    row = cur.fetchone()
+    return str(row) if row else "unknown order"
+
+
 if __name__ == "__main__":
     app.run()
