@@ -68,5 +68,15 @@ def invoice():
     return str(cur.fetchall())
 
 
+@app.route("/account")
+def account():
+    username = request.args.get("username", "")
+
+    # V6 — SQL INJECTION: username concatenated straight into the query.
+    cur = sqlite3.connect("shop.db").cursor()
+    cur.execute("SELECT id, email, balance FROM accounts WHERE username = '" + username + "'")
+    return str(cur.fetchall())
+
+
 if __name__ == "__main__":
     app.run()
