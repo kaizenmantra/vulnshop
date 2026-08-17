@@ -74,7 +74,7 @@ def coupon_redeem():
 
     # V7 — SQL INJECTION: coupon code interpolated straight into the query.
     cur = sqlite3.connect("shop.db").cursor()
-    cur.execute(f"SELECT discount FROM coupons WHERE code = '{code}'")
+    cur.execute("SELECT discount FROM coupons WHERE code = ?", (code,))
     row = cur.fetchone()
     return str(row[0]) if row else "invalid"
 
