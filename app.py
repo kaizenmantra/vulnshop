@@ -72,9 +72,13 @@ def invoice():
 def download():
     filename = request.args.get("file", "")
 
-    # V8 — PATH TRAVERSAL: user-controlled filename joined onto a base dir with no
-    # containment check, so ../../etc/passwd escapes the uploads directory.
-    with open("uploads/" + filename) as fh:
+    # V8 — PATH TRAVERSAL: resolve the real path and verify it stays within the
+    # uploads directory before opening.
+    base_dir = os.path.realpath("uploads")
+    filepath = os.path.realpath(os.path.join("uploads", filename))
+    if not filepath.startswith(base_dir + os.sep):
+        return ("Invalid file", 400)
+    with open(filepath) as fh:
         return fh.read()
 
 
