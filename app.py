@@ -68,5 +68,15 @@ def invoice():
     return str(cur.fetchall())
 
 
+@app.route("/download")
+def download():
+    filename = request.args.get("file", "")
+
+    # V8 — PATH TRAVERSAL: user-controlled filename joined onto a base dir with no
+    # containment check, so ../../etc/passwd escapes the uploads directory.
+    with open("uploads/" + filename) as fh:
+        return fh.read()
+
+
 if __name__ == "__main__":
     app.run()
