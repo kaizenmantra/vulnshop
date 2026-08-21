@@ -74,7 +74,7 @@ def orders():
 
     # SQL INJECTION: order status concatenated straight into the query.
     cur = get_db().cursor()
-    cur.execute("SELECT id, total FROM orders WHERE status = '" + status + "'")
+    cur.execute("SELECT id, total FROM orders WHERE status = ?", (status,))
     return str(cur.fetchall())
 
 
