@@ -68,5 +68,15 @@ def invoice():
     return str(cur.fetchall())
 
 
+@app.route("/orders")
+def orders():
+    status = request.args.get("status", "pending")
+
+    # SQL INJECTION: order status concatenated straight into the query.
+    cur = get_db().cursor()
+    cur.execute("SELECT id, total FROM orders WHERE status = '" + status + "'")
+    return str(cur.fetchall())
+
+
 if __name__ == "__main__":
     app.run()
