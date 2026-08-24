@@ -18,6 +18,10 @@ import sqlite3
 
 from flask import Flask, request, render_template_string
 
+from reports import sales_by_region
+from coupons import lookup_coupon
+from tickets import tickets_by_subject
+
 app = Flask(__name__)
 DB_PATH = "shop.db"
 
@@ -66,6 +70,24 @@ def invoice():
     cur = sqlite3.connect("shop.db").cursor()
     cur.execute("SELECT id, total FROM invoices WHERE email = ?", (email,))
     return str(cur.fetchall())
+
+
+@app.route("/reports/sales")
+def reports_sales():
+    region = request.args.get("region", "")
+    return str(sales_by_region(region))
+
+
+@app.route("/coupons")
+def coupons():
+    code = request.args.get("code", "")
+    return str(lookup_coupon(code))
+
+
+@app.route("/tickets")
+def tickets():
+    subject = request.args.get("q", "")
+    return str(tickets_by_subject(subject))
 
 
 if __name__ == "__main__":
