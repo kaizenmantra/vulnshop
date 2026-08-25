@@ -1,0 +1,21 @@
+# Run on the server VM only: docker compose -f lab/server-vm/compose.yaml up -d --build
+# Never start this on the Omarchy host.
+
+services:
+  vulnshop:
+    build:
+      context: ../..
+      dockerfile: lab/server-vm/Dockerfile
+    expose:
+      - "5000"
+    restart: unless-stopped
+
+  web:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - vulnshop
+    restart: unless-stopped

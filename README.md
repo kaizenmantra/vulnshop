@@ -39,3 +39,7 @@ for — after which V1 moves to `fixed` in code scanning while V2 remains `open`
 pip install -r requirements.txt
 python app.py   # http://127.0.0.1:5000  — again: never expose this
 ```
+
+## Isolated homelab (optional)
+
+To run this as the DMZ web app on a **dedicated Omarchy MacBook** (LTE, OPNsense VM, never the house LAN), see [`lab/README.md`](lab/README.md). Shopping list for Powai: [`lab/SHOPPING.md`](lab/SHOPPING.md). Claude Code on that machine should read [`lab/AGENTS.md`](lab/AGENTS.md) and execute [`lab/SETUP.md`](lab/SETUP.md).

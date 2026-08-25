@@ -14,3 +14,9 @@ semgrep.sarif
 
 # OS
 .DS_Store
+
+# Lab hypervisor cache / disks (never commit ISOs)
+lab/.cache/
+*.qcow2
+*.iso
+*.iso.bz2

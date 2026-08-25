@@ -1,0 +1,23 @@
+#cloud-config
+hostname: lab-server
+manage_etc_hosts: true
+users:
+  - name: lab
+    groups: [sudo]
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    lock_passwd: true
+    ssh_authorized_keys:
+      - SSH_PUBKEY_PLACEHOLDER
+package_update: true
+packages:
+  - docker.io
+  - docker-compose
+  - git
+  - curl
+runcmd:
+  - usermod -aG docker lab
+  - mkdir -p /opt
+  - git clone --depth 1 https://github.com/kaizenmantra/vulnshop.git /opt/vulnshop || true
+  - cd /opt/vulnshop && docker-compose -f lab/server-vm/compose.yaml up -d --build || true
+final_message: "lab-server cloud-init finished"
