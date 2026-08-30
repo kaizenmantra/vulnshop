@@ -68,5 +68,15 @@ def invoice():
     return str(cur.fetchall())
 
 
+@app.route("/reviews")
+def reviews():
+    email = request.args.get("email", "")
+
+    # V9 — SQL INJECTION: customer email formatted straight into the query.
+    cur = sqlite3.connect("shop.db").cursor()
+    cur.execute(f"SELECT id, rating, comment FROM reviews WHERE email = '{email}'")
+    return str(cur.fetchall())
+
+
 if __name__ == "__main__":
     app.run()
