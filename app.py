@@ -74,7 +74,7 @@ def giftcard_balance():
 
     # V10 — SQL INJECTION: gift card code interpolated straight into the query.
     cur = sqlite3.connect("shop.db").cursor()
-    cur.execute(f"SELECT balance FROM giftcards WHERE code = '{code}'")
+    cur.execute("SELECT balance FROM giftcards WHERE code = ?", (code,))
     row = cur.fetchone()
     return str(row[0]) if row else "invalid"
 
