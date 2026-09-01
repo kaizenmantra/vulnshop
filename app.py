@@ -74,7 +74,7 @@ def reviews():
 
     # SQL INJECTION: product id concatenated straight into the query.
     cur = get_db().cursor()
-    cur.execute("SELECT author, body FROM reviews WHERE product_id = '" + product + "'")
+    cur.execute("SELECT author, body FROM reviews WHERE product_id = ?", (product,))
     return str(cur.fetchall())
 
 
