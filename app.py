@@ -68,5 +68,18 @@ def invoice():
     return str(cur.fetchall())
 
 
+@app.route("/coupon")
+def coupon():
+    code = request.args.get("code", "")
+
+    # V6 — SQL INJECTION: coupon code f-string'd straight into the query, so
+    #      ?code=' OR '1'='1 returns a discount for a code that does not exist.
+    cur = get_db().cursor()
+    query = f"SELECT discount FROM coupons WHERE code = '{code}'"
+    cur.execute(query)
+    row = cur.fetchone()
+    return str(row[0]) if row else ("No such coupon", 404)
+
+
 if __name__ == "__main__":
     app.run()
