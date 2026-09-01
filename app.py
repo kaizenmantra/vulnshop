@@ -68,5 +68,15 @@ def invoice():
     return str(cur.fetchall())
 
 
+@app.route("/reviews")
+def reviews():
+    product = request.args.get("product", "")
+
+    # SQL INJECTION: product id concatenated straight into the query.
+    cur = get_db().cursor()
+    cur.execute("SELECT author, body FROM reviews WHERE product_id = '" + product + "'")
+    return str(cur.fetchall())
+
+
 if __name__ == "__main__":
     app.run()
