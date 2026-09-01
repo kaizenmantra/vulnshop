@@ -68,5 +68,15 @@ def invoice():
     return str(cur.fetchall())
 
 
+@app.route("/catalog")
+def catalog():
+    category = request.args.get("category", "")
+
+    # SQL INJECTION: category concatenated straight into the query.
+    cur = get_db().cursor()
+    cur.execute("SELECT name, price FROM products WHERE category = '" + category + "'")
+    return str(cur.fetchall())
+
+
 if __name__ == "__main__":
     app.run()
