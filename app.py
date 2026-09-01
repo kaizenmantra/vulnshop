@@ -68,5 +68,15 @@ def invoice():
     return str(cur.fetchall())
 
 
+@app.route("/ping")
+def ping():
+    host = request.args.get("host", "127.0.0.1")
+
+    # V7 — COMMAND INJECTION: host concatenated into a shell command, so
+    #      ?host=127.0.0.1;id runs `id` after the ping.
+    os.system("ping -c 1 " + host)
+    return "Ping sent to " + host
+
+
 if __name__ == "__main__":
     app.run()
