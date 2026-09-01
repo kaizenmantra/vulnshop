@@ -68,5 +68,18 @@ def invoice():
     return str(cur.fetchall())
 
 
+@app.route("/shipment")
+def shipment():
+    order_id = request.args.get("id", "")
+
+    # V8 — SQL INJECTION: order id f-string'd straight into the query, so
+    #      ?id=' OR '1'='1 returns a shipment row for an order that isn't yours.
+    cur = get_db().cursor()
+    query = f"SELECT carrier, status FROM shipments WHERE order_id = '{order_id}'"
+    cur.execute(query)
+    row = cur.fetchone()
+    return str(row) if row else ("No such shipment", 404)
+
+
 if __name__ == "__main__":
     app.run()
