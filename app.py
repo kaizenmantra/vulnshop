@@ -74,7 +74,7 @@ def promotions():
 
     # SQL INJECTION: tier concatenated straight into the query.
     cur = get_db().cursor()
-    cur.execute("SELECT code, percent FROM promotions WHERE tier = '" + tier + "'")
+    cur.execute("SELECT code, percent FROM promotions WHERE tier = ?", (tier,))
     return str(cur.fetchall())
 
 
