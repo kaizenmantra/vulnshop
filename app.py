@@ -74,7 +74,7 @@ def catalog():
 
     # SQL INJECTION: category concatenated straight into the query.
     cur = get_db().cursor()
-    cur.execute("SELECT name, price FROM products WHERE category = '" + category + "'")
+    cur.execute("SELECT name, price FROM products WHERE category = ?", (category,))
     return str(cur.fetchall())
 
 
