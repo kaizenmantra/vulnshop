@@ -68,5 +68,15 @@ def invoice():
     return str(cur.fetchall())
 
 
+@app.route("/offers")
+def offers():
+    season = request.args.get("season", "")
+
+    # SQL INJECTION: season concatenated straight into the query.
+    cur = get_db().cursor()
+    cur.execute("SELECT title, discount FROM offers WHERE season = '" + season + "'")
+    return str(cur.fetchall())
+
+
 if __name__ == "__main__":
     app.run()
