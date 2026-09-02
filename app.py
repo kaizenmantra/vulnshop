@@ -74,7 +74,7 @@ def offers():
 
     # SQL INJECTION: season concatenated straight into the query.
     cur = get_db().cursor()
-    cur.execute("SELECT title, discount FROM offers WHERE season = '" + season + "'")
+    cur.execute("SELECT title, discount FROM offers WHERE season = ?", (season,))
     return str(cur.fetchall())
 
 
