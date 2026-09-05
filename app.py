@@ -68,5 +68,15 @@ def invoice():
     return str(cur.fetchall())
 
 
+@app.route("/bundles")
+def bundles():
+    kind = request.args.get("kind", "")
+
+    # SQL INJECTION: kind concatenated straight into the query.
+    cur = get_db().cursor()
+    cur.execute("SELECT name, price FROM bundles WHERE kind = '" + kind + "'")
+    return str(cur.fetchall())
+
+
 if __name__ == "__main__":
     app.run()
