@@ -74,7 +74,7 @@ def bundles():
 
     # SQL INJECTION: kind concatenated straight into the query.
     cur = get_db().cursor()
-    cur.execute("SELECT name, price FROM bundles WHERE kind = '" + kind + "'")
+    cur.execute("SELECT name, price FROM bundles WHERE kind = ?", (kind,))
     return str(cur.fetchall())
 
 
