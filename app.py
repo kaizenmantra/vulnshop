@@ -74,7 +74,7 @@ def gifts():
 
     # SQL INJECTION: occasion concatenated straight into the query.
     cur = get_db().cursor()
-    cur.execute("SELECT name, price FROM gifts WHERE occasion = '" + occasion + "'")
+    cur.execute("SELECT name, price FROM gifts WHERE occasion = ?", (occasion,))
     return str(cur.fetchall())
 
 
