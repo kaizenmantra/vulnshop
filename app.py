@@ -68,5 +68,15 @@ def invoice():
     return str(cur.fetchall())
 
 
+@app.route("/gifts")
+def gifts():
+    occasion = request.args.get("occasion", "")
+
+    # SQL INJECTION: occasion concatenated straight into the query.
+    cur = get_db().cursor()
+    cur.execute("SELECT name, price FROM gifts WHERE occasion = '" + occasion + "'")
+    return str(cur.fetchall())
+
+
 if __name__ == "__main__":
     app.run()
