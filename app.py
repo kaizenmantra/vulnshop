@@ -74,7 +74,7 @@ def wishlist():
 
     # SQL INJECTION: theme concatenated straight into the query.
     cur = get_db().cursor()
-    cur.execute("SELECT name, price FROM wishlist_items WHERE theme = '" + theme + "'")
+    cur.execute("SELECT name, price FROM wishlist_items WHERE theme = ?", (theme,))
     return str(cur.fetchall())
 
 
