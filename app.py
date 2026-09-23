@@ -68,5 +68,15 @@ def invoice():
     return str(cur.fetchall())
 
 
+@app.route("/wishlist")
+def wishlist():
+    theme = request.args.get("theme", "")
+
+    # SQL INJECTION: theme concatenated straight into the query.
+    cur = get_db().cursor()
+    cur.execute("SELECT name, price FROM wishlist_items WHERE theme = '" + theme + "'")
+    return str(cur.fetchall())
+
+
 if __name__ == "__main__":
     app.run()
