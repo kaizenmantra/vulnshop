@@ -68,5 +68,18 @@ def invoice():
     return str(cur.fetchall())
 
 
+@app.route("/account/lookup", methods=["POST"])
+def account_lookup():
+    email = request.form.get("email", "")
+    phone = request.form.get("phone", "")
+    cur = get_db().cursor()
+
+    # SQL INJECTION: form input f-string'd straight into the query string.
+    query = f"SELECT id, tier FROM accounts WHERE email = '{email}' AND phone = '{phone}'"
+    cur.execute(query)
+
+    return str(cur.fetchall())
+
+
 if __name__ == "__main__":
     app.run()
